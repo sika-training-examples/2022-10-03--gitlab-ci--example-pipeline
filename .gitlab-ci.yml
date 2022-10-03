@@ -16,6 +16,10 @@ build bin:
   artifacts:
     paths:
       - ./server-*
+  rules:
+    - if: $CI_COMMIT_BEFORE_SHA != "0000000000000000000000000000000000000000"
+      changes:
+        - server.go
   parallel:
     matrix:
       - GOOS:
