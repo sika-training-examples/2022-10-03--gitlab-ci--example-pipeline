@@ -4,6 +4,8 @@ stages:
   - build
   - deploy dev
   - test dev
+  - deploy prod
+  - test prod
 
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
@@ -79,6 +81,34 @@ test dev:
   stage: test dev
   variables:
     HOST: dev.$BASE_HOST
+  script:
+    - sleep 10
+    - curl -fsSL https://$HOST
+
+deploy prod:
+  stage: deploy prod
+  variables:
+    HOST: prod.$BASE_HOST
+  script:
+    - helm upgrade --install prod
+        one-image --repo https://helm.sikalabs.io
+        --set host=$HOST
+        --set image=$IMAGE
+    - slu wait-for tls -a $HOST:443
+  rules:
+    - if: $CI_COMMIT_TAG
+  when: manual
+  allow_failure: false
+  environment:
+    name: prod
+    url: https://$HOST
+
+test prod:
+  stage: test prod
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    HOST: prod.$BASE_HOST
   script:
     - sleep 10
     - curl -fsSL https://$HOST
