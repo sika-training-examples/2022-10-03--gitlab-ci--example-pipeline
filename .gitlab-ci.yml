@@ -58,6 +58,7 @@ deploy dev:
     - slu wait-for tls -a $HOST:443
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
     - when: manual
   allow_failure: false
   environment:
