@@ -80,4 +80,5 @@ test dev:
   variables:
     HOST: dev.$BASE_HOST
   script:
+    - sleep 10
     - curl -fsSL https://$HOST
