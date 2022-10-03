@@ -60,6 +60,11 @@ build docker:
         --set image=$IMAGE
     - slu wait-for tls -a $HOST:443
 
+.deploy dev:
+  stage: deploy dev
+  needs:
+    - build docker
+
 .test:
   script:
     - sleep 20
@@ -68,9 +73,7 @@ build docker:
 deploy dev:
   extends:
     - .deploy
-  stage: deploy dev
-  needs:
-    - build docker
+    - .deploy dev
   variables:
     HOST: dev.$BASE_HOST
     RELESE_NAME: dev
@@ -85,9 +88,8 @@ deploy dev:
     on_stop: stop dev
 
 stop dev:
-  stage: deploy dev
-  needs:
-    - build docker
+  extends:
+    - .deploy dev
   variables:
     GIT_STRATEGY: none
   when: manual
