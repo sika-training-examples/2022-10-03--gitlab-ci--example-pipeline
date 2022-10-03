@@ -82,7 +82,7 @@ test dev:
   variables:
     HOST: dev.$BASE_HOST
   script:
-    - sleep 10
+    - sleep 20
     - curl -fsSL https://$HOST
 
 deploy prod:
@@ -110,5 +110,5 @@ test prod:
   variables:
     HOST: prod.$BASE_HOST
   script:
-    - sleep 10
+    - sleep 20
     - curl -fsSL https://$HOST
