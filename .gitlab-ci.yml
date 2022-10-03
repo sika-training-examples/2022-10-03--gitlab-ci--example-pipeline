@@ -6,6 +6,24 @@ stages:
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
 
+build bin:
+  stage: build
+  image: golang
+  script:
+    - go build -o server-$GOOS-$GOARCH server.go
+  artifacts:
+    paths:
+      - ./server-*
+  parallel:
+    matrix:
+      - GOOS:
+          - linux
+          - darwin
+          - windows
+        GOARCH:
+          - amd64
+          - arm64
+
 build docker:
   stage: build
   script:
