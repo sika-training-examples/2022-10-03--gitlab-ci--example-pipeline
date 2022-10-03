@@ -1,6 +1,7 @@
 image: sikalabs/ci
 
 stages:
+  - lint
   - build
   - deploy dev
   - test dev
@@ -10,6 +11,13 @@ stages:
 variables:
   IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
   BASE_HOST: k8s.sikademo.com
+
+go:
+  stage: lint
+  image: golang
+  script:
+    - gofmt -d -l .
+  allow_failure: true
 
 build bin:
   stage: build
