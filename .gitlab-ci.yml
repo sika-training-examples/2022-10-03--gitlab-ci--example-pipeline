@@ -60,6 +60,11 @@ build docker:
         --set image=$IMAGE
     - slu wait-for tls -a $HOST:443
 
+.test:
+  script:
+    - sleep 20
+    - curl -fsSL https://$HOST
+
 deploy dev:
   extends:
     - .deploy
@@ -96,9 +101,8 @@ test dev:
   stage: test dev
   variables:
     HOST: dev.$BASE_HOST
-  script:
-    - sleep 20
-    - curl -fsSL https://$HOST
+  extends:
+    - .test
 
 deploy prod:
   extends:
@@ -121,6 +125,5 @@ test prod:
     - if: $CI_COMMIT_TAG
   variables:
     HOST: prod.$BASE_HOST
-  script:
-    - sleep 20
-    - curl -fsSL https://$HOST
+  extends:
+    - .test
